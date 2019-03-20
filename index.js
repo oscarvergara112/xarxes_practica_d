@@ -16,8 +16,14 @@ app.get('/:note_name', function(req, res) {
 	notes.get(req.params.note_name, req, res);
 });
 
+app.post('/content', function(req, res) {
+	console.log('GET /content');
+	notes.getbycontent(req, res);
+});
+
 app.post('/:note_name', function(req, res) {
 	if(req.params.note_name == "favicon.ico") return;
+	console.log(req.body);
 	console.log('POST /note_name');
 	notes.insert(req.params.note_name, req, res);
 });
@@ -26,6 +32,12 @@ app.put('/:note_name', function(req, res) {
 	if(req.params.note_name == "favicon.ico") return;
 	console.log('PUT /note_name');
 	notes.upsert(req.params.note_name, req, res);
+});
+
+app.delete('/:note_name', function(req, res) {
+	if(req.params.note_name == "favicon.ico") return;
+	console.log('DEL /note_name');
+	notes.delete(req.params.note_name, req, res);
 });
 
 app.listen(process.env.PORT || 8000);
