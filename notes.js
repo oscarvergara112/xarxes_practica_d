@@ -16,14 +16,23 @@ exports.get = function(note_name, req, res) {
 };
 
 exports.getbycontent = function(content, req, res) {
-  for(let i = 0; i < names.length; i++){
-    if(notes[names[i]].content.includes(content)){
-      this.get(names[i], req, res);
-      return;
+  let found = false;
+  var tempNames = {};
+  for(let i = 0; i < names.length; i++) {
+    if(notes[names[i]].content.includes(content)) {
+      found = true;
+      tempNames[names[i]] = notes[names[i]];
+      console.log("Found " + names[i] + "!");
     }
   }
-  res.send("Not found");
-  res.end();
+  if(!found) {
+    res.status(404);
+    res.end();
+    console.error(note_name + " NOT FOUND!");
+  }
+  else {
+    res.json(Object.keys(tempNames));
+  }
 };
 
 exports.insert = function(note_name, req, res) {
@@ -54,10 +63,17 @@ exports.delete = function(note_name, req, res) {
 };
 
 exports.upsert = function(note_name, req, res) {
-  if (notes.hasOwnProperty(note_name)) {
-    notes[note_name] = { content: req.body.content, modified: new Date() };
+  if (!req.body.content) {
+    res.status(422);
     res.end();
-  } else {
-    this.insert(note_name, req, res);
+    return console.error(note_name + " INCORRECT BODY JSON!");
+  }
+  else{
+    if (notes.hasOwnProperty(note_name)) {
+      notes[note_name] = { content: req.body.content, modified: new Date() };
+      res.end();
+    } else {
+      this.insert(note_name, req, res);
+    }
   }
 };

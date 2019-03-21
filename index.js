@@ -6,7 +6,6 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.get('/', function(req, res) {
-	console.log('GET /');
 	notes.list(req, res)
 });
 
@@ -18,7 +17,7 @@ app.get('/:note_name', function(req, res) {
 
 app.post('/content', function(req, res) {
 	console.log('GET /content');
-	notes.getbycontent(req, res);
+	notes.getbycontent(req.body.content, req, res);
 });
 
 app.post('/:note_name', function(req, res) {
